@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="src/bootstrap.min.css">
+</head>
+
+<body>
+  <h1 style="font-size: 20px; padding-top: 20px; text-align: center;">
+    <img style="vertical-align: middle" src="./icons/icon-32.png">
+    <span style="vertical-align: middle">SETTING</span>
+  </h1>
+
+  <div style="width:200px; padding:20px">
+    <div class="form-check form-switch">
+      <input class="form-check-input" type="checkbox" id="onoff-btn">
+      <label class="form-check-label" for="onoff-btn">On/Off</label>
+    </div>
+    <br>
+    <div>
+      <label for="numOfLines">行数 (number of lines)</label>
+      <br>
+      <div style="display: inline-block">
+        <input style="vertical-align: middle" type="range" class="custom-range" min="5" max="15" step="1"
+          id="num-of-lines">
+      </div>
+      <div style="display: inline-block">
+        <span id="current-lines"></span>
+      </div>
+    </div>
+    <br>
+    <div>
+      <label for="opacity">透過度 (opacity)</label>
+      <br>
+      <div style="display: inline-block">
+        <input style="vertical-align: middle" type="range" class="custom-range" min="0" max="100" step="1" id="opacity">
+      </div>
+      <div style="display: inline-block">
+        <span id="current-opacity"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="popup.js"></script>
+  <script src="src/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
