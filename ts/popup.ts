@@ -26,7 +26,7 @@ async function switchOnOff() {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   const tabId = tabs[0].id;
   if (!tabId) return;
-  chrome.tabs.sendMessage(tabId, { message: 'switchOnOff' });
+  chrome.tabs.sendMessage(tabId, { message: 'switchOnOff', isRunning: onOff.checked });
 
   chrome.storage.local.set({ isRunning: onOff.checked });
 };

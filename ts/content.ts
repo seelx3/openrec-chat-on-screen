@@ -200,7 +200,7 @@ chrome.storage.local.get({ opacity: 50 }, (data) => {
 // change state
 chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
   if (request.message === 'switchOnOff') {
-    isRunning = !isRunning;
+    isRunning = request.isRunning;
   } else if (request.message === 'changeNumOfLines') {
     maxLines = request.numOfLines;
     core.modify(true);
