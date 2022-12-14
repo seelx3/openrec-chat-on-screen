@@ -13,5 +13,5 @@ OPENREC.tv上でのチャットを、画面上に表示するChrome拡張機能�
 <img src="https://github.com/seelx3/openrec-chat-on-screen/blob/master/images/screen-shot-02.png" width="70%" height="70%">  
 
 ## インストール
-- 1. Chromeウェブストアにて公開予定
+- 1. [Chrome ウェブストア](https://chrome.google.com/webstore/detail/openrectv-chat-on-screen/bjlkknfhobongacemacdhafponlngikk)から追加。
 - 2. 本プロジェクトをダウンロードし、appフォルダをChrome拡張機能として読み込む。
