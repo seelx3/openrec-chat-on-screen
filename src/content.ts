@@ -20,8 +20,8 @@ let isRunning = false;
 
 // customize
 const SCRIPTNAME = "OpenrecChatOnScreen";
-const COLER = '#ffffff';
-const OCOLER = '#000000';
+const COLER = "#ffffff";
+const OCOLER = "#000000";
 const OWIDTH = 1 / 10;
 const LINEHEIGHT = 0.75;
 const DURATION = 5;
@@ -34,19 +34,26 @@ let maxLines = 14;
 const url = location.href;
 
 // site info
-let site: SiteInfo = url.indexOf("live") != -1 ? {
-  // live
-  getScreen: () => document.querySelector('.video-player-wrapper'),
-  getBoard: () => document.querySelector('.chat-list-content'),
-  getComments: (node: HTMLElement) => node.querySelector('.chat-content'),
-  getPlay: () => document.querySelector('[class^="MovieToolbar"] [class^="TextLabel__Wrapper"]'),
-} : {
-  // capture
-  getScreen: () => document.querySelector('[class^="Component__PlayerWrapper"]'),
-  getBoard: () => document.querySelector('[class^="ChatList__Content"]'),
-  getComments: (node: HTMLElement) => node.querySelector('.chat-content'),
-  getPlay: () => document.querySelector('[class^="ControlBar__Wrapper"]'),
-};
+let site: SiteInfo =
+  url.indexOf("live") != -1
+    ? {
+        // live
+        getScreen: () => document.querySelector(".video-player-wrapper"),
+        getBoard: () => document.querySelector(".chat-list-content"),
+        getComments: (node: HTMLElement) => node.querySelector(".chat-content"),
+        getPlay: () =>
+          document.querySelector(
+            '[class^="MovieToolbar"] [class^="TextLabel__Wrapper"]'
+          ),
+      }
+    : {
+        // capture
+        getScreen: () =>
+          document.querySelector('[class^="Component__PlayerWrapper"]'),
+        getBoard: () => document.querySelector('[class^="ChatList__Content"]'),
+        getComments: (node: HTMLElement) => node.querySelector(".chat-content"),
+        getPlay: () => document.querySelector('[class^="ControlBar__Wrapper"]'),
+      };
 
 // process
 let display: HTMLElement | null;
@@ -68,10 +75,10 @@ let core = {
       return;
     }
 
-    canvas = document.createElement('canvas');
+    canvas = document.createElement("canvas");
     canvas.id = SCRIPTNAME;
     display.appendChild(canvas);
-    context = canvas.getContext('2d');
+    context = canvas.getContext("2d");
 
     core.addStyle();
     core.listenComments();
@@ -79,28 +86,33 @@ let core = {
   },
   addStyle: () => {
     // console.log(SCRIPTNAME, "addStyle");
-    let head = document.getElementsByTagName('head')[0];
+    let head = document.getElementsByTagName("head")[0];
     if (!head) return;
-    let style = document.createElement('style');
-    style.setAttribute('type', 'text/css');
-    style.innerHTML = '' +
-      'canvas#' + SCRIPTNAME + '{' +
-      ' pointer-events: none;' +
-      ' position: absolute;' +
-      ' top: 0;' +
-      ' left: 0;' +
-      ' width: 100%;' +
-      ' height: 100%;' +
-      ' opacity: ' + opacity + ';' +
-      ' z-index: 10000;' +
-      '}' +
-      '';
+    let style = document.createElement("style");
+    style.setAttribute("type", "text/css");
+    style.innerHTML =
+      "" +
+      "canvas#" +
+      SCRIPTNAME +
+      "{" +
+      " pointer-events: none;" +
+      " position: absolute;" +
+      " top: 0;" +
+      " left: 0;" +
+      " width: 100%;" +
+      " height: 100%;" +
+      " opacity: " +
+      opacity +
+      ";" +
+      " z-index: 10000;" +
+      "}" +
+      "";
     head.appendChild(style);
   },
   listenComments: () => {
     // console.log(SCRIPTNAME, "listenComments");
     if (!board) return;
-    board.addEventListener('DOMNodeInserted', (e) => {
+    board.addEventListener("DOMNodeInserted", (e) => {
       const target = e.target as HTMLElement;
       let comment = site.getComments(target);
       if (!comment) return;
@@ -115,7 +127,7 @@ let core = {
     canvas.width = display.offsetWidth;
     canvas.height = display.offsetHeight;
     fontsize = (canvas.height / maxLines) * LINEHEIGHT;
-    context.font = 'bold ' + fontsize + 'px sans-serif';
+    context.font = "bold " + fontsize + "px sans-serif";
     context.fillStyle = COLER;
     context.strokeStyle = OCOLER;
     context.lineWidth = fontsize * OWIDTH;
@@ -137,21 +149,25 @@ let core = {
       speed: chatSpeed,
       reveal: chatWidth / chatSpeed,
       touch: chatWidth / chatSpeed,
-      top: 0
+      top: 0,
     };
 
     for (let i = 0; i < maxLines; i++) {
       let len = lines[i] ? lines[i].length : 0;
       if (!lines[i] || !len) {
         lines[i] = [];
-      } else if (lines[i][len - 1].speed > newRecord.speed && lines[i][len - 1].reveal < 0) {
-        ;
-      } else if (lines[i][len - 1].speed < newRecord.speed && lines[i][len - 1].life < newRecord.touch) {
-        ;
+      } else if (
+        lines[i][len - 1].speed > newRecord.speed &&
+        lines[i][len - 1].reveal < 0
+      ) {
+      } else if (
+        lines[i][len - 1].speed < newRecord.speed &&
+        lines[i][len - 1].life < newRecord.touch
+      ) {
       } else {
         continue;
       }
-      newRecord.top = ((canvas.height / maxLines) * i) + fontsize;
+      newRecord.top = (canvas.height / maxLines) * i + fontsize;
       lines[i].push(newRecord);
       break;
     }
@@ -164,7 +180,11 @@ let core = {
       context.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; lines[i]; i++) {
         for (let j = 0; lines[i][j]; j++) {
-          context.strokeText(lines[i][j].text, lines[i][j].left, lines[i][j].top);
+          context.strokeText(
+            lines[i][j].text,
+            lines[i][j].left,
+            lines[i][j].top
+          );
           context.fillText(lines[i][j].text, lines[i][j].left, lines[i][j].top);
           lines[i][j].life--;
           lines[i][j].reveal--;
@@ -188,23 +208,23 @@ let core = {
 core.init();
 chrome.storage.local.get({ isRunning: false }, (data) => {
   isRunning = data.isRunning;
-})
+});
 chrome.storage.local.get({ numOfLines: 14 }, (data) => {
   maxLines = data.numOfLines;
-})
+});
 chrome.storage.local.get({ opacity: 50 }, (data) => {
   opacity = data.opacity * 0.01;
   core.setOpacity();
-})
+});
 
 // change state
 chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
-  if (request.message === 'switchOnOff') {
+  if (request.message === "switchOnOff") {
     isRunning = request.isRunning;
-  } else if (request.message === 'changeNumOfLines') {
+  } else if (request.message === "changeNumOfLines") {
     maxLines = request.numOfLines;
     core.modify(true);
-  } else if (request.message === 'changeOpacity') {
+  } else if (request.message === "changeOpacity") {
     opacity = request.opacity * 0.01;
     core.setOpacity();
   }
