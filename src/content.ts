@@ -64,6 +64,21 @@ let context: CanvasRenderingContext2D | null;
 let lines: ChatRecord[][] = [];
 let fontsize: number;
 
+// obserber
+const observer = new MutationObserver((mutationsList) => {
+  for (const mutation of mutationsList) {
+    if (mutation.type === 'childList') {
+      mutation.addedNodes.forEach((node) => {
+        const target = node as HTMLElement;
+        let comment = site.getComments(target);
+        if (!comment) return;
+        core.modify();
+        core.attachComment(comment);
+      });
+    }
+  }
+});
+
 let core = {
   init: () => {
     // console.log(SCRIPTNAME, "init");
@@ -81,7 +96,7 @@ let core = {
     context = canvas.getContext("2d");
 
     core.addStyle();
-    core.listenComments();
+    observer.observe(board, { childList: true });
     core.scrollComments();
   },
   addStyle: () => {
@@ -108,17 +123,6 @@ let core = {
       "}" +
       "";
     head.appendChild(style);
-  },
-  listenComments: () => {
-    // console.log(SCRIPTNAME, "listenComments");
-    if (!board) return;
-    board.addEventListener("DOMNodeInserted", (e) => {
-      const target = e.target as HTMLElement;
-      let comment = site.getComments(target);
-      if (!comment) return;
-      core.modify();
-      core.attachComment(comment);
-    });
   },
   modify: (flag = false) => {
     // console.log(SCRIPTNAME, "modify");
