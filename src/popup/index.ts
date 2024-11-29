@@ -1,44 +1,66 @@
+import {
+  switchOnOffSender,
+  changeNumOfLinesSender,
+  changeOpacitySender,
+} from "./messageSender";
+
 const curLines = document.getElementById("current-lines");
 const curOpacity = document.getElementById("current-opacity");
 
-let onOff = document.getElementById("onoff-btn") as HTMLInputElement;
-let linesNum = document.getElementById("num-of-lines") as HTMLInputElement;
-let opacityNum = document.getElementById("opacity") as HTMLInputElement;
+const onOff = document.getElementById("onoff-btn") as HTMLInputElement;
+const linesNum = document.getElementById("num-of-lines") as HTMLInputElement;
+const opacityNum = document.getElementById("opacity") as HTMLInputElement;
 
-const setCurrentLines = (val: string) => {
+const setDisplayedCurrentLines = (val: string) => {
   if (!curLines) return;
   curLines.innerText = val;
 };
 
-const setCurrentOpacity = (val: string) => {
+const setDisplayedCurrentOpacity = (val: string) => {
   if (!curOpacity) return;
   curOpacity.innerText = val;
 };
 
-// init state
-chrome.storage.local.get({ isRunning: false }, (data) => {
-  if (!onOff) return;
-  if (data.isRunning) {
-    onOff.checked = true;
-  } else {
-    onOff.checked = false;
-  }
-});
-chrome.storage.local.get({ numOfLines: 14 }, (data) => {
-  if (!linesNum) return;
-  linesNum.value = data.numOfLines;
-  setCurrentLines(data.numOfLines);
-});
-chrome.storage.local.get({ opacity: 50 }, (data) => {
-  opacityNum.value = data.opacity;
-  setCurrentOpacity(data.opacity);
-});
+function initializeStates() {
+  // Use first argument as the default value if the key is not found
+  chrome.storage.local.get({ isRunning: false }, (data) => {
+    if (!onOff) return;
+    if (data.isRunning) {
+      onOff.checked = true;
+    } else {
+      onOff.checked = false;
+    }
+  });
+  chrome.storage.local.get({ numOfLines: 14 }, (data) => {
+    if (!linesNum) return;
+    linesNum.value = data.numOfLines;
+    setDisplayedCurrentLines(data.numOfLines);
+  });
+  chrome.storage.local.get({ opacity: 50 }, (data) => {
+    opacityNum.value = data.opacity;
+    setDisplayedCurrentOpacity(data.opacity);
+  });
+}
 
-// on/off
-onOff.addEventListener("click", switchOnOffSender);
+function addEventListeners() {
+  // on/off
+  onOff.addEventListener("click", async () => {
+    await switchOnOffSender(onOff);
+  });
 
-// num of lines
-linesNum.addEventListener("change", changeNumOfLinesSender);
+  // num of lines
+  linesNum.addEventListener("change", async (e: Event) => {
+    await changeNumOfLinesSender(e, setDisplayedCurrentLines);
+  });
 
-// opacity
-opacityNum.addEventListener("change", changeOpacitySender);
+  // opacity
+  opacityNum.addEventListener("change", async (e: Event) => {
+    await changeOpacitySender(e, setDisplayedCurrentOpacity);
+  });
+}
+
+function main() {
+  initializeStates();
+  addEventListeners();
+}
+main();
