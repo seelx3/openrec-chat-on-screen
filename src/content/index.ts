@@ -23,26 +23,26 @@ function main() {
   scroller.init(observer);
 
   chrome.storage.local.get({ isRunning: false }, (data) => {
-    scroller.isRunning = data.isRunning;
+    scroller.setIsRunning(data.isRunning);
   });
   chrome.storage.local.get({ numOfLines: 14 }, (data) => {
-    scroller.maxLines = data.numOfLines;
+    scroller.setMaxLines(data.numOfLines);
   });
   chrome.storage.local.get({ opacity: 50 }, (data) => {
-    scroller.opacity = data.opacity * 0.01;
-    scroller.setOpacity();
+    scroller.setOpacity(data.opacity * 0.01);
+    scroller.setDisplayedOpacity();
   });
 
   // message listener
   chrome.runtime.onMessage.addListener((request) => {
     if (request.message === "switchOnOff") {
-      scroller.isRunning = request.isRunning;
+      scroller.setIsRunning(request.isRunning);
     } else if (request.message === "changeNumOfLines") {
-      scroller.maxLines = request.numOfLines;
+      scroller.setMaxLines(request.numOfLines);
       scroller.modify(true);
     } else if (request.message === "changeOpacity") {
-      scroller.opacity = request.opacity * 0.01;
-      scroller.setOpacity();
+      scroller.setOpacity(request.opacity * 0.01);
+      scroller.setDisplayedOpacity();
     }
   });
 }

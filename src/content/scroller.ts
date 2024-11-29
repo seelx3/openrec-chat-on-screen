@@ -6,32 +6,32 @@ const SCRIPTNAME = "OpenrecChatOnScreen";
 
 export class Scroller {
   private display: HTMLElement | null;
-  public board: HTMLElement | null;
+  private _board: HTMLElement | null;
   private play: HTMLElement | null;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D | null;
   private lines: ChatRecord[][] = [];
   private fontsize: number;
-  public isRunning = false;
-  public opacity = 0.5;
-  public maxLines = 14;
+  private _isRunning = false;
+  private _opacity = 0.5;
+  private _maxLines = 14;
 
   constructor() {
     this.display = site.getScreen();
-    this.board = site.getBoard();
+    this._board = site.getBoard();
     this.play = site.getPlay();
     this.canvas = document.createElement("canvas");
     this.canvas.id = SCRIPTNAME;
     this.context = this.canvas.getContext("2d");
-    this.fontsize = (this.canvas.height / this.maxLines) * LINEHEIGHT;
+    this.fontsize = (this.canvas.height / this._maxLines) * LINEHEIGHT;
   }
 
   init(obserber: MutationObserver): void {
     // console.log(SCRIPTNAME, "init");
     this.display = site.getScreen();
-    this.board = site.getBoard();
+    this._board = site.getBoard();
     this.play = site.getPlay();
-    if (!this.display || !this.board || !this.play) {
+    if (!this.display || !this._board || !this.play) {
       window.setTimeout(() => this.init(obserber), 1000);
       return;
     }
@@ -42,7 +42,7 @@ export class Scroller {
     this.context = this.canvas.getContext("2d");
 
     this.addStyle();
-    obserber.observe(this.board, { childList: true });
+    obserber.observe(this._board, { childList: true });
     this.scrollComments();
   }
 
@@ -60,7 +60,7 @@ export class Scroller {
       left: 0;
       width: 100%;
       height: 100%;
-      opacity: ${this.opacity};
+      opacity: ${this._opacity};
       z-index: 10000;
     }
     `;
@@ -73,7 +73,7 @@ export class Scroller {
     if (this.canvas.width == this.display.offsetWidth && !flag) return;
     this.canvas.width = this.display.offsetWidth;
     this.canvas.height = this.display.offsetHeight;
-    this.fontsize = (this.canvas.height / this.maxLines) * LINEHEIGHT;
+    this.fontsize = (this.canvas.height / this._maxLines) * LINEHEIGHT;
     this.context.font = "bold " + this.fontsize + "px sans-serif";
     this.context.fillStyle = COLER;
     this.context.strokeStyle = OCOLER;
@@ -82,7 +82,7 @@ export class Scroller {
 
   attachComment(comment: HTMLElement): void {
     // console.log(SCRIPTNAME, "attachComment");
-    if (!this.isRunning || !this.context) return;
+    if (!this._isRunning || !this.context) return;
     const chatText = comment.textContent;
     if (!chatText) return;
     const chatWidth = this.context.measureText(chatText).width;
@@ -100,11 +100,11 @@ export class Scroller {
     };
 
     const addNewRecordToLine = (i: number) => {
-      newRecord.top = (this.canvas.height / this.maxLines) * i + this.fontsize;
+      newRecord.top = (this.canvas.height / this._maxLines) * i + this.fontsize;
       this.lines[i].push(newRecord);
     };
 
-    for (let i = 0; i < this.maxLines; i++) {
+    for (let i = 0; i < this._maxLines; i++) {
       const len = this.lines[i] ? this.lines[i].length : 0;
       if (!this.lines[i] || !len) {
         this.lines[i] = [];
@@ -152,9 +152,25 @@ export class Scroller {
     }, 1000 / FPS);
   }
 
-  setOpacity(): void {
+  setDisplayedOpacity(): void {
     // console.log(SCRIPTNAME, "setOpacity");
     const canvas = document.getElementById(SCRIPTNAME);
-    if (canvas) canvas.style.opacity = this.opacity.toString();
+    if (canvas) canvas.style.opacity = this._opacity.toString();
+  }
+
+  board(): HTMLElement | null {
+    return this._board;
+  }
+
+  setIsRunning(isRunning: boolean): void {
+    this._isRunning = isRunning;
+  }
+
+  setMaxLines(numOfLines: number): void {
+    this._maxLines = numOfLines;
+  }
+
+  setOpacity(opacity: number): void {
+    this._opacity = opacity;
   }
 }
