@@ -1,11 +1,15 @@
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const glob = require('glob');
 const path = require('path');
+
+const contentEntries = glob.sync('./src/content/*.ts').map((entry) => ('./' + entry));
+const popupEntries = glob.sync('./src/popup/*.ts').map((entry) => ('./' + entry));
 
 module.exports = {
   mode: 'production',
   entry: {
-    content: './src/content.ts',
-    popup: './src/popup.ts',
+    content: contentEntries,
+    popup: popupEntries,
   },
   output: {
     path: path.resolve(__dirname, 'build'),
@@ -19,6 +23,9 @@ module.exports = {
       }
     ]
   },
+  resolve: {
+    extensions: ['.ts', '.js']
+ },
   plugins: [
     new CopyWebpackPlugin({
       patterns: [
