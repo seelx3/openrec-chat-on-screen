@@ -5,7 +5,6 @@ export type ChatRecord = {
   left: number;
   speed: number;
   reveal: number;
-  touch: number;
   top: number;
 };
 

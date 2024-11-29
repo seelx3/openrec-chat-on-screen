@@ -96,29 +96,29 @@ export class Scroller {
       left: this.canvas.width,
       speed: chatSpeed,
       reveal: chatWidth / chatSpeed,
-      touch: chatWidth / chatSpeed,
       top: 0,
+    };
+
+    const addNewRecordToLine = (i: number) => {
+      newRecord.top = (this.canvas.height / this.maxLines) * i + this.fontsize;
+      this.lines[i].push(newRecord);
     };
 
     for (let i = 0; i < this.maxLines; i++) {
       let len = this.lines[i] ? this.lines[i].length : 0;
       if (!this.lines[i] || !len) {
         this.lines[i] = [];
+        addNewRecordToLine(i);
       } else if (
-        this.lines[i][len - 1].speed > newRecord.speed &&
-        this.lines[i][len - 1].reveal < 0
+        (this.lines[i][len - 1].speed > newRecord.speed &&
+          this.lines[i][len - 1].reveal < 0) ||
+        (this.lines[i][len - 1].speed < newRecord.speed &&
+          this.lines[i][len - 1].life < newRecord.reveal)
       ) {
-        // do nothing
-      } else if (
-        this.lines[i][len - 1].speed < newRecord.speed &&
-        this.lines[i][len - 1].life < newRecord.touch
-      ) {
-        // do nothing
+        addNewRecordToLine(i);
       } else {
         continue;
       }
-      newRecord.top = (this.canvas.height / this.maxLines) * i + this.fontsize;
-      this.lines[i].push(newRecord);
       break;
     }
   }
@@ -143,7 +143,6 @@ export class Scroller {
           );
           this.lines[i][j].life--;
           this.lines[i][j].reveal--;
-          this.lines[i][j].touch--;
           this.lines[i][j].left -= this.lines[i][j].speed;
         }
         if (this.lines[i][0] && this.lines[i][0].life == 0) {
