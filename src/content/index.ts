@@ -10,7 +10,7 @@ function main() {
       if (mutation.type === "childList") {
         mutation.addedNodes.forEach((node) => {
           const target = node as HTMLElement;
-          let comment = site.getComments(target);
+          const comment = site.getComments(target);
           if (!comment) return;
           scroller.modify();
           scroller.attachComment(comment);
@@ -34,7 +34,7 @@ function main() {
   });
 
   // message listener
-  chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
+  chrome.runtime.onMessage.addListener((request) => {
     if (request.message === "switchOnOff") {
       scroller.isRunning = request.isRunning;
     } else if (request.message === "changeNumOfLines") {

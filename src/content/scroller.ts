@@ -48,9 +48,9 @@ export class Scroller {
 
   addStyle(): void {
     // console.log(SCRIPTNAME, "addStyle");
-    let head = document.getElementsByTagName("head")[0];
+    const head = document.getElementsByTagName("head")[0];
     if (!head) return;
-    let style = document.createElement("style");
+    const style = document.createElement("style");
     style.setAttribute("type", "text/css");
     style.innerHTML = `
     canvas#${SCRIPTNAME} {
@@ -83,13 +83,13 @@ export class Scroller {
   attachComment(comment: HTMLElement): void {
     // console.log(SCRIPTNAME, "attachComment");
     if (!this.isRunning || !this.context) return;
-    let chatText = comment.textContent;
+    const chatText = comment.textContent;
     if (!chatText) return;
-    let chatWidth = this.context.measureText(chatText).width;
-    let chatLife = DURATION * FPS;
-    let chatSpeed = (this.canvas.width + chatWidth) / chatLife;
+    const chatWidth = this.context.measureText(chatText).width;
+    const chatLife = DURATION * FPS;
+    const chatSpeed = (this.canvas.width + chatWidth) / chatLife;
 
-    let newRecord: ChatRecord = {
+    const newRecord: ChatRecord = {
       text: chatText,
       width: chatWidth,
       life: chatLife,
@@ -105,7 +105,7 @@ export class Scroller {
     };
 
     for (let i = 0; i < this.maxLines; i++) {
-      let len = this.lines[i] ? this.lines[i].length : 0;
+      const len = this.lines[i] ? this.lines[i].length : 0;
       if (!this.lines[i] || !len) {
         this.lines[i] = [];
         addNewRecordToLine(i);
@@ -154,7 +154,7 @@ export class Scroller {
 
   setOpacity(): void {
     // console.log(SCRIPTNAME, "setOpacity");
-    let canvas = document.getElementById(SCRIPTNAME);
+    const canvas = document.getElementById(SCRIPTNAME);
     if (canvas) canvas.style.opacity = this.opacity.toString();
   }
 }
